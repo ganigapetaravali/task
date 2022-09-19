@@ -1,0 +1,25 @@
+stage('Push Docker Images to Nexus Registry'){
+sh 'docker login -u admin   -p admin http://54.211.71.95:8081/repository/'
+sh 'docker push http://54.211.71.95:8081/repository/demoimg//DepImg}'
+sh 'docker rmi $(docker images --filter=reference="http://54.211.71.95:8081/repository/demoimg//DepImg*" -q)'
+sh 'docker logout http://54.211.71.95:8081/repository/demoimg//DepImg'
+}
+
+
+wget -q -O - https://pkg.jenkins.io/debian/jenkins-ci.org.key | sudo apt-key add -
+sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+sudo apt-get update
+sudo apt-get install jenkins
+apt-get install openjdk-8-jdk -y
+apt install docker.io
+
+
+
+docker login -u docker  http://18.232.187.8:8083  -p admin
+
+openssl req \
+  -newkey rsa:4096 -nodes -sha256 -keyout certs/domain.key \
+  -addext "subjectAltName = DNS:http://18.232.187.8" \
+  -x509 -days 365 -out certs/domain.crt
+
+  /etc/docker/certs.d/18.232.187.8:8081/ca.crt
